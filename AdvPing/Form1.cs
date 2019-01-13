@@ -119,6 +119,7 @@ namespace AdvPing
         private void Ping_PingEnded(object sender, EventArgs e)
         {
             BeginInvoke(new NoParamDeleg(EnableAll));
+            ping = null;
         }
 
         private void DisableAll()
@@ -153,7 +154,10 @@ namespace AdvPing
         private void OnReplyRecived(PingCompeleteEventArgs e)
         {
             if (LineCount > 10000)
+            {
                 textBoxLog.Clear();
+                LineCount = 0;
+            }
             if (e.Reply.GetType().Equals(typeof(string)))
             {
                 textBoxLog.AppendText((string)e.Reply);
@@ -216,7 +220,6 @@ namespace AdvPing
         private void buttonEnd_Click(object sender, EventArgs e)
         {
             ping.StopPing();
-            EnableAll();
         }
 
         private void textBoxIP_KeyUp(object sender, KeyEventArgs e)

@@ -19,6 +19,7 @@ namespace AdvPing
             Records.Add(r);
             
             var SumDelay = Records.Sum(x => x.Delay);
+            
             Sent = Records.Count;
             Recved = Records.Sum(x => (x.Lost == 0?1:0));
             Lost = Sent - Recved;
@@ -26,6 +27,13 @@ namespace AdvPing
             PkgLstRate = (double)Lost / Sent * 100;
             Max = Records.Max(x => x.Delay);
             Min = Records.Min(x => x.Delay);
+
+            if (Records.Count >= 16384)
+            {
+                Records.RemoveRange(0, 16384);
+                Records.Add(new StatRecord() { Delay = (int)Average, Lost = 0 });
+            }
+
         }
 
         public void Clear()

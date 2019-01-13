@@ -66,6 +66,7 @@ namespace AdvPing
             isRunning = false;
             WorkerThread.Abort();
             WorkerThread = null;
+            RaiseOnPingEnded();
         }
 
         private void WorkerFunc()

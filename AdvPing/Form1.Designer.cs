@@ -410,7 +410,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.MinimumSize = new System.Drawing.Size(980, 490);
+            this.MinimumSize = new System.Drawing.Size(980, 210);
             this.Name = "Form1";
             this.Text = "AdvPing";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
