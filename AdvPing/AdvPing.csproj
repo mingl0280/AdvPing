@@ -46,12 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CtrlStatusElement.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CtrlStatusElement.Designer.cs">
-      <DependentUpon>CtrlStatusElement.cs</DependentUpon>
-    </Compile>
     <Compile Include="EnumTypes.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -66,9 +60,6 @@
     <Compile Include="Statics.cs" />
     <Compile Include="StaticsItem.cs" />
     <Compile Include="StatRecord.cs" />
-    <EmbeddedResource Include="CtrlStatusElement.resx">
-      <DependentUpon>CtrlStatusElement.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
