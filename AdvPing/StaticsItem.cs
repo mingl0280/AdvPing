@@ -2,6 +2,7 @@
 using static AdvPing.EnumTypes;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace AdvPing
 {
@@ -66,6 +67,11 @@ namespace AdvPing
             {
                 TimeValue = (double)n;
                 _format = "0.00";
+            }
+            if (n.GetType().Equals(typeof(BigInteger)))
+            {
+                TimeValue = 0;
+                _format = "" + ((BigInteger)n).ToString();
             }
         }
 

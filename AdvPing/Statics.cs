@@ -1,39 +1,80 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using Numerics;
+
+
 
 namespace AdvPing
 {
     public class Statics
     {
-        public int Max { get; private set; }
-        public int Min { get; private set; }
+#if DEBUG
+        private const int ClearCount = 10;
+#else
+        private const int ClearCount = 16384;
+#endif
+        public BigInteger Max { get; private set; }
+        public BigInteger Min { get; private set; }
         public double Average { get; private set; }
-        public int Sent { get; private set; }
-        public int Recved { get; private set; }
-        public int Lost { get; private set; }
+        public BigInteger Sent { get; private set; }
+        public BigInteger Recved { get; private set; }
+        public BigInteger Lost { get; private set; }
         public double PkgLstRate { get; private set; }
+        private double LastAverage { get; set; }
+        private BigInteger LastCount { get; set; }
+        private BigInteger LastRecived { get; set; }
+        private double LastPkgLstRate { get; set; }
+
+        public BigInteger TotalSent
+        {
+            get
+            {
+                return Sent + LastCount;
+            }
+        }
+        public BigInteger TotalRecved
+        {
+            get
+            {
+                return Recved + LastRecived;
+            }
+        }
+        public BigInteger TotalLost
+        {
+            get
+            {
+                return TotalSent - TotalRecved;
+            }
+        }
+
         public void Add(StatRecord r)
         {
             if (r.Delay == 0 || r.Lost == 1)
                 r.Delay = (int)Average;
             Records.Add(r);
-            
+
             var SumDelay = Records.Sum(x => x.Delay);
-            
+
             Sent = Records.Count;
-            Recved = Records.Sum(x => (x.Lost == 0?1:0));
+            Recved = Records.Sum(x => (x.Lost == 0 ? 1 : 0));
             Lost = Sent - Recved;
-            Average = (double)SumDelay / Sent;
-            PkgLstRate = (double)Lost / Sent * 100;
+            double NewAvg = (double)(SumDelay / (BigRational)Sent);
+            double NewLostRate = (double)(Lost / (BigRational)Sent);
+            double PctOld = (double)(LastCount / (BigRational)(LastCount + Sent));
+            double PctNew = (double)(Sent / (BigRational)(LastCount + Sent));
+            Average = LastAverage * PctOld + NewAvg * PctNew;
+            PkgLstRate = (LastPkgLstRate * PctOld + NewLostRate * PctNew) * 100;
             Max = Records.Max(x => x.Delay);
             Min = Records.Min(x => x.Delay);
 
-            if (Records.Count >= 16384)
+            if (Records.Count >= ClearCount)
             {
-                Records.RemoveRange(0, 16384);
-                Records.Add(new StatRecord() { Delay = (int)Average, Lost = 0 });
+                Records.Clear();
+                LastCount += ClearCount;
+                LastAverage = Average;
+                LastRecived += Recved;
             }
-
         }
 
         public void Clear()
@@ -57,14 +98,14 @@ namespace AdvPing
                     return Average;
                 case "sent":
                 case "snt":
-                    return Sent;
+                    return TotalSent;
                 case "rcv":
                 case "recved":
                 case "received":
-                    return Recved;
+                    return TotalRecved;
                 case "los":
                 case "lost":
-                    return Lost;
+                    return TotalLost;
                 case "pct":
                 case "lostpct":
                     return PkgLstRate;
